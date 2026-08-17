@@ -6,4 +6,3 @@ chromadb
 streamlit
 python-dotenv
 python-multipart
-requests

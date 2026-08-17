@@ -1,27 +1,16 @@
 import os
-
 from dotenv import load_dotenv
+from sentence_transformers import SentenceTransformer
 
 load_dotenv()
 
-
-def _get_client():
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is not set")
-
-    try:
-        from google import genai
-    except ImportError as exc:
-        raise RuntimeError("google-genai is not installed") from exc
-
-    return genai.Client(api_key=api_key)
-
+# Load the model once to avoid reloading it on every request
+_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def generate_embedding(text: str):
-    client = _get_client()
-    response = client.models.embed_content(
-        model="gemini-embedding-001",
-        contents=text,
-    )
-    return response.embeddings[0].values
+    try:
+        # Generate the embedding and convert it to a flat list of floats
+        embedding = _model.encode(text)
+        return embedding.tolist()
+    except Exception as exc:
+        raise RuntimeError(f"Embedding generation failed: {exc}") from exc

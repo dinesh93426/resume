@@ -22,8 +22,8 @@ def home():
 @app.post("/upload")
 def upload_resume(file: UploadFile = File(...)):
     try:
-        # Support both package names depending on environment setup.
-        from pypdf import PdfReader  # type: ignore
+        
+        from pypdf import PdfReader  
     except ImportError:
         try:
             from PyPDF2 import PdfReader  # type: ignore
